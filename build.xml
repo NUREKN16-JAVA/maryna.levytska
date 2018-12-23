@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     
+     usermanagement    
+     description
+                   
+     maryn                                                                
+     ====================================================================== -->
+<project name="usermanagement" basedir="." default="test">
+	<property name="build.sysclasspath" value="last"/>
+
+	<description>
+            description 
+    </description>
+	<property name="build-dir" value="${basedir}/bin" />
+	<property name="classes-dir" value="${build-dir}/classes" />
+	<property name="main-java-dir" value="${basedir}/src/main/java" />
+	<property name="test-java-dir" value="${basedir}/src/test/java" />
+	<!-- ================================= 
+          target: default              
+         ================================= -->
+	<target name="compile" depends="init" description="Java compile stage">
+		<javac srcdir="${main-java-dir}" destdir="${build-dir}" />
+	</target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: depends                      
+         - - - - - - - - - - - - - - - - - -->
+	<target name="cleanup">
+		<delete dir="${build-dir}" failonerror="yes" />
+	</target>
+
+
+	<target name="init" depends="cleanup">
+		<mkdir dir="${build-dir}" />
+		<mkdir dir="${classes-dir}"/>
+	</target>
+
+	<target name="test-compile" depends="init">
+		<javac  srcdir="${test-java-dir}" destdir="${build-dir}" classpath="./junit.jar"/>
+		<classpath refid="test.compile.path"/>
+		<classpath location="${build-dir}" />
+	</target>
+
+	<target name="test" depends="test-compile">
+		<junit>
+			<classpath>
+				<pathelement location="${build-dir}"/>
+				<pathelement location="junit.jar"/>
+			</classpath>
+			<formatter type="plain"/>
+			<test name="ua.nure.kn16.levitskaya.UserTest"/>
+
+		</junit>
+	</target>
+
+</project>
