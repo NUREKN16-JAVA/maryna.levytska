@@ -13,7 +13,7 @@ class HsqlDBUserDAO implements UserDAO {
 	private static final String DELETE_USER_QUERY = "DELETE FROM users WHERE id = ?";
 	private static final String FIND_USER_BY_ID_QUERY = "SELECT id, firstname, lastname, dateofbirth FROM users WHERE id = ?";
 	private static final String FIND_ALL_USERS_QUERY = "SELECT * FROM users";
-
+	private static final String FIND_USERS_BY_NAMES_QUERY = "SELECT id, firstname, lastname, dateofbirth FROM users WHERE firstname = ? AND lastname = ?";
 	private ConnectionFactory connectionFactory;
 
 	public HsqlDBUserDAO(ConnectionFactory connectionFactory) {
@@ -162,4 +162,27 @@ class HsqlDBUserDAO implements UserDAO {
 
 	}
 
+	@Override
+	public Collection<User> find(String firstName, String lastName) throws DAOException {
+		Collection<User> result = new LinkedList<>();
+
+		try {
+			Connection connection = connectionFactory.createConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(FIND_USERS_BY_NAMES_QUERY);
+			preparedStatement.setString(1, firstName);
+			preparedStatement.setString(2, lastName);
+			ResultSet resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				User user = new User();
+				user.setId(new Long(resultSet.getLong(1)));
+				user.setFirstName(resultSet.getString(2));
+				user.setLastName(resultSet.getString(3));
+				user.setDateOfBirth(resultSet.getDate(4));
+				result.add(user);
+			}
+		} catch (SQLException e) {
+			throw new DAOException(e);
+		}
+		return result;
+	}
 }

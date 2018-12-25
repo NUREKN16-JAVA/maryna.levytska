@@ -46,4 +46,9 @@ public class MockUserDAO implements UserDAO {
 
     }
 
+	@Override
+	public Collection find(String firstName, String lastName) throws DAOException{
+		 return users.values();
+	}
+
 }

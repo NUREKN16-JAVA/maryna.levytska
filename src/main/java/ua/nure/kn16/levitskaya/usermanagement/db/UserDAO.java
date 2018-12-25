@@ -51,4 +51,6 @@ public interface UserDAO {
 	 */
 	void setConnectionFactory(ConnectionFactory connectionFactory);
 
+	public Collection find(String firstName, String lastName) throws DAOException;
+
 }
